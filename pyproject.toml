@@ -10,12 +10,15 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "mcp[cli]>=2.2.0",
+    "pillow>=12.3.0",
+    "pyautogui>=0.9.54",
     "telethon>=1.45.0",
 ]
 
 [project.scripts]
 telegram-mcp = "telegram_mcp.server:main"
 telegram-mcp-login = "telegram_mcp.login:main"
+telegram-gui-mcp = "telegram_mcp.gui_server:main"
 
 [build-system]
 requires = ["uv_build>=0.10.0,<0.11.0"]

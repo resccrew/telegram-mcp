@@ -65,6 +65,38 @@ Restart Claude Code and ask things like *"read my last messages from Alice"*,
 | `TELEGRAM_SESSION` | `~/.telegram-mcp/session.txt` |
 | `TELEGRAM_MCP_HOME` | `~/.telegram-mcp` |
 
+## GUI mode (no API keys): `telegram-gui-mcp`
+
+A second server, `telegram-gui`, drives the **Telegram desktop app** like a person: it sends Claude a
+screenshot, Claude answers with where to click/what to type, and pyautogui does it. No `api_id`,
+no login, no session file — it just uses the app that is already logged in. macOS only.
+
+| Tool | What it does |
+|---|---|
+| `screenshot` | Full-screen screenshot (downscaled to ≤1280 px) |
+| `click` / `double_click` | Click at `(x, y)` in the last screenshot (`button`: left/right/middle) |
+| `type_text` | Type into the focused field via the clipboard (Cyrillic, emoji), `press_enter` to send |
+| `press_key` / `hotkey` | `enter`, `esc`, … / `["command", "k"]` |
+| `scroll` | Positive = up, negative = down, optionally over `(x, y)` |
+| `open_telegram` | Launch / bring Telegram to the front |
+
+Every action returns a fresh screenshot (`screenshot_after=false` to skip). Coordinates always refer
+to the last screenshot; Retina scaling is handled by the server.
+
+**Permissions.** In System Settings → Privacy & Security, grant the app that runs Claude Code
+(Terminal, iTerm, Ghostty, VS Code, …) both **Screen Recording** (screenshots) and **Accessibility**
+(clicks and keys), then restart that app. Without them the tools return an error saying which one is missing.
+
+**Register:**
+
+```sh
+claude mcp add --scope user telegram-gui -- /Users/pravorovnikita/.local/bin/uv \
+  --directory /Users/pravorovnikita/telegram-mcp run telegram-gui-mcp
+```
+
+Safety: moving the mouse into a screen corner aborts automation (pyautogui failsafe). The server
+controls your real mouse and keyboard, so don't use the computer while Claude is working.
+
 ## Other MCP clients
 
 Any stdio MCP client works. Example config (Claude Desktop, Cursor, ...):
