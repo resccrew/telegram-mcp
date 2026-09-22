@@ -1,0 +1,31 @@
+[project]
+name = "telegram-mcp"
+version = "0.1.0"
+description = "MCP server that gives Claude Code full control of a Telegram user account"
+readme = "README.md"
+authors = [
+    { name = "resccrew", email = "pravorovnik@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "mcp[cli]>=2.2.0",
+    "telethon>=1.45.0",
+]
+
+[project.scripts]
+telegram-mcp = "telegram_mcp.server:main"
+telegram-mcp-login = "telegram_mcp.login:main"
+
+[build-system]
+requires = ["uv_build>=0.10.0,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

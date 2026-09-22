@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+dist/
+*.session
+*.session-journal
+.env
+*.env
+config.env
+.DS_Store
+session.txt
