@@ -75,10 +75,10 @@ equals full account access. `.gitignore` also blocks `*.session`, `*.env`.
 ## Status
 - Done: 23 tools, login flow, 49 tests, Critic/Security review fixes, registered in Claude Code (user scope).
 - Published: https://github.com/resccrew/telegram-mcp (public, MIT).
-- GUI mode (branch `feat/gui-pyautogui`): 8 tools, 19 tests (68 total green). Real screenshot works
-  (Screen Recording granted to Ghostty). Accessibility NOT yet granted → clicks return an error.
-- Next: grant Accessibility, register `telegram-gui` (see README), live test in Telegram;
-  real-account smoke test of the API server after `telegram-mcp-login`.
+- GUI mode (`telegram-gui`): 8 tools, 19 tests (68 total green), Critic/Security fixes, merged to main,
+  registered in Claude Code (user scope). Live test 2026-09-22 passed on the real Telegram Desktop:
+  open app, search, open Saved Messages, type Cyrillic + emoji; Retina click mapping accurate.
+- Next: real-account smoke test of the API server after `telegram-mcp-login`.
 
 ## Agents
 Planner, Architect, Implementer, Tester, Critic, Security, Analyst, Documenter (see ~/.claude/CLAUDE.md).

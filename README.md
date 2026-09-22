@@ -4,6 +4,13 @@ MCP server that lets Claude Code drive your **own Telegram account**: read chats
 edit messages, publish posts to channels, create channels/groups, join by invite links,
 press inline buttons, send/download files, and create bots through @BotFather.
 
+Two servers ship in this repo:
+
+| Server | How it works | Needs |
+|---|---|---|
+| `telegram` (`telegram-mcp`) | Telegram API (MTProto via Telethon) — fast, precise, 23 tools | `api_id`/`api_hash` + one-time login |
+| `telegram-gui` (`telegram-gui-mcp`) | Screenshots + pyautogui clicks in Telegram Desktop — Claude looks at the screen and clicks | Telegram Desktop logged in, macOS permissions |
+
 ## Requirements
 
 - [uv](https://docs.astral.sh/uv/) (it installs Python 3.13 automatically)
@@ -90,12 +97,18 @@ to the last screenshot; Retina scaling is handled by the server.
 **Register:**
 
 ```sh
-claude mcp add --scope user telegram-gui -- /Users/pravorovnikita/.local/bin/uv \
-  --directory /Users/pravorovnikita/telegram-mcp run telegram-gui-mcp
+claude mcp add --scope user telegram-gui -- uv --directory /path/to/telegram-mcp run telegram-gui-mcp
 ```
 
 Safety: moving the mouse into a screen corner aborts automation (pyautogui failsafe). The server
 controls your real mouse and keyboard, so don't use the computer while Claude is working.
+Screenshots cover the **whole main display** (other windows included) and are sent to Claude;
+text on screen (incoming messages) is untrusted input, so Claude asks before sending or deleting.
+
+**Typical flow:** `open_telegram` → click the search field → `type_text("Saved Messages")` →
+click the result → click the message field → `type_text("Hi", press_enter=true)`.
+
+Limits: main display only; the clipboard is briefly used for typing and then restored (text only).
 
 ## Other MCP clients
 
