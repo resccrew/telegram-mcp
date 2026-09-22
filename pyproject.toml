@@ -3,8 +3,9 @@ name = "telegram-mcp"
 version = "0.1.0"
 description = "MCP server that gives Claude Code full control of a Telegram user account"
 readme = "README.md"
+license = "MIT"
 authors = [
-    { name = "resccrew", email = "pravorovnik@gmail.com" }
+    { name = "resccrew" }
 ]
 requires-python = ">=3.13"
 dependencies = [

@@ -4,7 +4,19 @@ MCP server that lets Claude Code drive your **own Telegram account**: read chats
 edit messages, publish posts to channels, create channels/groups, join by invite links,
 press inline buttons, send/download files, and create bots through @BotFather.
 
+## Requirements
+
+- [uv](https://docs.astral.sh/uv/) (it installs Python 3.13 automatically)
+- [Claude Code](https://claude.com/claude-code) (or any MCP client)
+- A Telegram account
+
 ## Setup
+
+0. Clone the repo:
+
+   ```sh
+   git clone https://github.com/resccrew/telegram-mcp.git ~/telegram-mcp
+   ```
 
 1. Get `api_id` and `api_hash` at <https://my.telegram.org> → *API development tools*.
 2. Log in once (asks for the credentials, then phone number, the code Telegram sends, and your 2FA password):
@@ -53,8 +65,28 @@ Restart Claude Code and ask things like *"read my last messages from Alice"*,
 | `TELEGRAM_SESSION` | `~/.telegram-mcp/session.txt` |
 | `TELEGRAM_MCP_HOME` | `~/.telegram-mcp` |
 
+## Other MCP clients
+
+Any stdio MCP client works. Example config (Claude Desktop, Cursor, ...):
+
+```json
+{
+  "mcpServers": {
+    "telegram": {
+      "command": "uv",
+      "args": ["--directory", "/absolute/path/to/telegram-mcp", "run", "telegram-mcp"]
+    }
+  }
+}
+```
+
 ## Development
 
 ```sh
 uv run pytest -q
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE). Use responsibly and follow the
+[Telegram API Terms of Service](https://core.telegram.org/api/terms): no spam or mass messaging.

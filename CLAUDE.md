@@ -52,6 +52,7 @@ equals full account access. `.gitignore` also blocks `*.session`, `*.env`.
 
 ## Status
 - Done: 23 tools, login flow, 49 tests, Critic/Security review fixes, registered in Claude Code (user scope).
+- Published: https://github.com/resccrew/telegram-mcp (public, MIT).
 - Next: real-account smoke test after the user runs `telegram-mcp-login`.
 
 ## Agents
