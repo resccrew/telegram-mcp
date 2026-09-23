@@ -127,8 +127,12 @@ def scroll(screen: Screen, state: ScreenState, amount: int, x: int | None = None
     return Ok(f"scrolled {amount}")
 
 
-def open_telegram(screen: Screen) -> Result[str]:
-    opened = screen.activate_app("Telegram")
+def open_app(screen: Screen, name: str) -> Result[str]:
+    opened = screen.activate_app(name)
     if isinstance(opened, Err):
         return opened
-    return Ok("Telegram is in front")
+    return Ok(f"{name} is in front")
+
+
+def open_telegram(screen: Screen) -> Result[str]:
+    return open_app(screen, "Telegram")

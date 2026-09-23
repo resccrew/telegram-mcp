@@ -216,3 +216,15 @@ def test_screenshot_reports_missing_screen_recording(monkeypatch):
     monkeypatch.setattr(gui_screen, "screen_recording_granted", lambda: False)
     result = gui_screen.MacScreen().screenshot()
     assert isinstance(result, Err) and "Screen Recording" in result.error
+
+
+async def test_tradelocker_server_opens_app_and_shares_tools(screen):
+    from telegram_mcp import tradelocker_gui_server as tl
+
+    result = await tl.mcp.call_tool("open_tradelocker", {"screenshot_after": False})
+    assert result.content[0].text == "TradeLocker is in front"
+    assert screen.calls == [("activate", "TradeLocker")]
+
+    await tl.mcp.call_tool("screenshot", {})
+    await tl.mcp.call_tool("click", {"x": 640, "y": 400})
+    assert screen.calls[-1] == ("click", 720, 450, "left")
