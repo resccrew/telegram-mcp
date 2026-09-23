@@ -19,6 +19,7 @@ dependencies = [
 telegram-mcp = "telegram_mcp.server:main"
 telegram-mcp-login = "telegram_mcp.login:main"
 telegram-gui-mcp = "telegram_mcp.gui_server:main"
+tradelocker-gui-mcp = "telegram_mcp.tradelocker_gui_server:main"
 
 [build-system]
 requires = ["uv_build>=0.10.0,<0.11.0"]
