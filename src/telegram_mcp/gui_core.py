@@ -24,6 +24,7 @@ class Screen(Protocol):
     def click(self, x: int, y: int, button: str) -> None: ...
     def double_click(self, x: int, y: int) -> None: ...
     def move(self, x: int, y: int) -> None: ...
+    def drag(self, x1: int, y1: int, x2: int, y2: int, duration: float) -> None: ...
     def scroll(self, amount: int) -> None: ...
     def hotkey(self, *keys: str) -> None: ...
     def press(self, key: str) -> None: ...
@@ -86,6 +87,19 @@ def double_click(screen: Screen, state: ScreenState, x: int, y: int) -> Result[s
         return point
     screen.double_click(*point.value)
     return Ok(f"double-clicked at ({x}, {y})")
+
+
+def drag(screen: Screen, state: ScreenState, x1: int, y1: int, x2: int, y2: int,
+         duration: float = 0.5) -> Result[str]:
+    """Press the left button at (x1, y1), move to (x2, y2), release: draws shapes, moves objects."""
+    start = to_screen_point(screen, state, x1, y1)
+    if isinstance(start, Err):
+        return start
+    end = to_screen_point(screen, state, x2, y2)
+    if isinstance(end, Err):
+        return end
+    screen.drag(*start.value, *end.value, duration)
+    return Ok(f"dragged ({x1}, {y1}) -> ({x2}, {y2})")
 
 
 def type_text(screen: Screen, text: str, press_enter: bool = False) -> Result[str]:

@@ -34,6 +34,9 @@ class FakeScreen:
     def move(self, x, y):
         self.calls.append(("move", x, y))
 
+    def drag(self, x1, y1, x2, y2, duration):
+        self.calls.append(("drag", x1, y1, x2, y2, duration))
+
     def scroll(self, amount):
         self.calls.append(("scroll", amount))
 
@@ -228,3 +231,28 @@ async def test_tradelocker_server_opens_app_and_shares_tools(screen):
     await tl.mcp.call_tool("screenshot", {})
     await tl.mcp.call_tool("click", {"x": 640, "y": 400})
     assert screen.calls[-1] == ("click", 720, 450, "left")
+
+
+def test_drag_maps_both_points_to_logical(screen):
+    state, _ = shoot(screen)
+    result = gui_core.drag(screen, state, 100, 200, 640, 400)
+    assert isinstance(result, Ok)
+    assert screen.calls == [("drag", 112, 225, 720, 450, 0.5)]
+
+
+def test_drag_rejects_points_outside_screenshot(screen):
+    state, _ = shoot(screen)
+    assert isinstance(gui_core.drag(screen, state, 0, 0, 5000, 10), Err)
+    assert screen.calls == []
+
+
+async def test_affinity_server_opens_app_and_can_drag(screen):
+    from telegram_mcp import affinity_gui_server as af
+
+    result = await af.mcp.call_tool("open_affinity", {"screenshot_after": False})
+    assert result.content[0].text == "Affinity is in front"
+    assert screen.calls == [("activate", "Affinity")]
+
+    await af.mcp.call_tool("screenshot", {})
+    await af.mcp.call_tool("drag", {"x1": 0, "y1": 0, "x2": 640, "y2": 400, "screenshot_after": False})
+    assert screen.calls[-1] == ("drag", 0, 0, 720, 450, 0.5)
