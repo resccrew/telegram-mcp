@@ -49,6 +49,9 @@ class FakeScreen:
     def paste_text(self, text):
         self.calls.append(("paste", text))
 
+    def focus_app(self, name):
+        self.calls.append(("focus", name))
+
     def activate_app(self, name):
         self.calls.append(("activate", name))
         return Ok(None)
@@ -256,3 +259,18 @@ async def test_affinity_server_opens_app_and_can_drag(screen):
     await af.mcp.call_tool("screenshot", {})
     await af.mcp.call_tool("drag", {"x1": 0, "y1": 0, "x2": 640, "y2": 400, "screenshot_after": False})
     assert screen.calls[-1] == ("drag", 0, 0, 720, 450, 0.5)
+
+
+async def test_affinity_server_refocuses_app_before_each_action(screen):
+    from telegram_mcp import affinity_gui_server as af
+
+    await af.mcp.call_tool("open_affinity", {"screenshot_after": False})
+    await af.mcp.call_tool("screenshot", {})
+    await af.mcp.call_tool("click", {"x": 640, "y": 400, "screenshot_after": False})
+    assert screen.calls[-2:] == [("focus", "Affinity"), ("click", 720, 450, "left")]
+
+
+async def test_telegram_gui_does_not_refocus(screen):
+    await gui_server.mcp.call_tool("screenshot", {})
+    await gui_server.mcp.call_tool("click", {"x": 640, "y": 400, "screenshot_after": False})
+    assert ("focus", "Affinity") not in screen.calls and screen.calls[-1][0] == "click"

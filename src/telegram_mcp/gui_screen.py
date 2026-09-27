@@ -15,6 +15,7 @@ PERMISSIONS_HINT = (
     "System Settings → Privacy & Security → {what}, then restart that app."
 )
 APP_START_WAIT = 1.5
+FOCUS_WAIT = 0.4
 APPLICATION_SERVICES = "/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices"
 CORE_GRAPHICS = "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics"
 # pbcopy/pbpaste pick the text encoding from LANG; MCP servers often start without it and Cyrillic gets mangled.
@@ -102,9 +103,20 @@ class MacScreen:
             if previous:  # empty = clipboard held no text (image, files): pbcopy can't restore that anyway
                 subprocess.run(["pbcopy"], input=previous, encoding="utf-8", env=UTF8_ENV)
 
+    def focus_app(self, name: str) -> None:
+        front = subprocess.run(
+            ["osascript", "-e", 'tell application "System Events" to get name of first process whose frontmost is true'],
+            capture_output=True, text=True).stdout.strip()
+        if front == name:
+            return
+        subprocess.run(["osascript", "-e", f'tell application "{name}" to activate'], capture_output=True)
+        time.sleep(FOCUS_WAIT)
+
     def activate_app(self, name: str) -> Result[None]:
         done = subprocess.run(["open", "-a", name], capture_output=True, text=True)
         if done.returncode != 0:
             return Err(f"Could not open {name}: {done.stderr.strip()}")
+        # open -a launches but doesn't always raise an already-running app over the caller's window
+        subprocess.run(["osascript", "-e", f'tell application "{name}" to activate'], capture_output=True)
         time.sleep(APP_START_WAIT)
         return Ok(None)

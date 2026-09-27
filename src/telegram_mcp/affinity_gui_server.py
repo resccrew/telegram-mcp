@@ -20,6 +20,8 @@ Controls the Affinity app (vector, pixel and layout design) on this Mac by looki
 Actions are performed as the user: confirm with them before overwriting, closing without saving or deleting files.
 """
 
+APP = "Affinity"
+
 mcp = MCPServer(name="affinity-gui", instructions=INSTRUCTIONS)
 
 for tool in (gui_server.screenshot, gui_server.click, gui_server.double_click, gui_server.drag,
@@ -30,11 +32,17 @@ for tool in (gui_server.screenshot, gui_server.click, gui_server.double_click, g
 @mcp.tool()
 def open_affinity(screenshot_after: bool = True) -> list[str | Image]:
     """Launch or bring the Affinity app to the front."""
-    return gui_server.act(lambda s: gui_core.open_app(s, "Affinity"), screenshot_after)
+    def open_and_keep_focus(screen: gui_core.Screen) -> gui_core.Result[str]:
+        opened = gui_core.open_app(screen, APP)
+        gui_server.set_focus_app(APP)
+        return opened
+
+    return gui_server.act(open_and_keep_focus, screenshot_after)
 
 
 def main() -> None:
     logging.basicConfig(level=logging.WARNING)
+    gui_server.set_focus_app(APP)
     mcp.run("stdio")
 
 

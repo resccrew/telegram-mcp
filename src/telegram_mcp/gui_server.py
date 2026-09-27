@@ -27,6 +27,13 @@ state = ScreenState()
 _screen: Screen | None = None
 # The SDK runs sync tools in worker threads; parallel tool calls must not move the mouse at the same time.
 _gui_lock = threading.Lock()
+_focus_app: str | None = None
+
+
+def set_focus_app(name: str | None) -> None:
+    """Re-raise this app before every action: another window (e.g. the terminal) may steal focus between calls."""
+    global _focus_app
+    _focus_app = name
 
 
 def get_screen() -> Screen:
@@ -43,6 +50,7 @@ def set_screen(screen: Screen) -> None:
     global _screen
     _screen = screen
     state.image_width = state.image_height = 0
+    set_focus_app(None)
 
 
 def snapshot(note: str) -> list[Any]:
@@ -63,6 +71,8 @@ def act(operation: Callable[[Screen], Result[str]], screenshot_after: bool) -> l
 
 def _act(operation: Callable[[Screen], Result[str]], screenshot_after: bool) -> list[str | Image]:
     try:
+        if _focus_app:
+            get_screen().focus_app(_focus_app)
         result = operation(get_screen())
     except Exception as exc:  # pyautogui failsafe, missing Accessibility permission, ...
         log.exception("GUI action failed")
@@ -78,6 +88,8 @@ def _act(operation: Callable[[Screen], Result[str]], screenshot_after: bool) -> 
 def screenshot() -> list[str | Image]:
     """Take a screenshot of the whole screen. Coordinates for other tools refer to this image."""
     with _gui_lock:
+        if _focus_app:
+            get_screen().focus_app(_focus_app)
         return snapshot("ok")
 
 

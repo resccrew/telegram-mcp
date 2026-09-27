@@ -51,6 +51,9 @@ Claude looks at the screenshot and says where to click. Needs no API keys or log
   `CGPreflightScreenCaptureAccess` (without it macOS silently returns only the wallpaper).
 - GUI tools share one lock: the SDK runs sync tools in worker threads, parallel calls must not interleave.
 - pbcopy/pbpaste run with `LANG=en_US.UTF-8`, else Cyrillic is mangled when the server has no LANG.
+- `affinity-gui` sets `gui_server.set_focus_app("Affinity")`: before every action/screenshot the app is
+  re-raised if another window (the terminal) took focus — otherwise clicks/drags land in the terminal.
+  `activate_app` also runs `osascript activate`, since `open -a` doesn't raise an already-running app.
 - Nothing may print to stdout in the server: stdout is the MCP protocol channel.
 
 ## Coding rules
@@ -80,6 +83,8 @@ equals full account access. `.gitignore` also blocks `*.session`, `*.env`.
 - GUI mode (`telegram-gui`): 8 tools, 19 tests (68 total green), Critic/Security fixes, merged to main,
   registered in Claude Code (user scope). Live test 2026-09-22 passed on the real Telegram Desktop:
   open app, search, open Saved Messages, type Cyrillic + emoji; Retina click mapping accurate.
+- Affinity GUI (`affinity-gui`): live test 2026-09-27 passed — new document (Cmd+N), rectangle drawn via drag.
+  Welcome-screen tiles ignore single clicks; use Cmd+N.
 - Next: real-account smoke test of the API server after `telegram-mcp-login`.
 
 ## Agents
