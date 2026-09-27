@@ -94,6 +94,13 @@ def double_click(x: int, y: int, screenshot_after: bool = True) -> list[str | Im
 
 
 @mcp.tool()
+def drag(x1: int, y1: int, x2: int, y2: int, duration: float = 0.5,
+         screenshot_after: bool = True) -> list[str | Image]:
+    """Drag with the left button from (x1, y1) to (x2, y2) in the last screenshot."""
+    return act(lambda s: gui_core.drag(s, state, x1, y1, x2, y2, duration), screenshot_after)
+
+
+@mcp.tool()
 def type_text(text: str, press_enter: bool = False, screenshot_after: bool = True) -> list[str | Image]:
     """Type text into the focused field (via clipboard, so any language works). press_enter sends it."""
     return act(lambda s: gui_core.type_text(s, text, press_enter), screenshot_after)

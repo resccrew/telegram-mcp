@@ -26,6 +26,8 @@ Claude looks at the screenshot and says where to click. Needs no API keys or log
 - `src/telegram_mcp/gui_screen.py` — real `MacScreen` (pyautogui, imported lazily; Accessibility check).
 - `src/telegram_mcp/gui_server.py` — `telegram-gui` MCP tools; each action returns text + a fresh
   screenshot (`Image`, return annotation `list[str | Image]` so the SDK emits image content blocks).
+- `src/telegram_mcp/affinity_gui_server.py` — `affinity-gui` server: same GUI tools + `drag` and
+  `open_affinity` for the Affinity design app (tradelocker_gui_server.py follows the same pattern).
 - `tests/test_gui.py` — `FakeScreen` (Retina-like 2880x1800 physical / 1440x900 logical).
 - `tests/fakes.py` — in-memory fake TelegramClient incl. a scripted @BotFather.
 

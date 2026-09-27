@@ -77,6 +77,11 @@ class MacScreen:
     def move(self, x: int, y: int) -> None:
         self._input().moveTo(x, y)
 
+    def drag(self, x1: int, y1: int, x2: int, y2: int, duration: float) -> None:
+        gui = self._input()
+        gui.moveTo(x1, y1)
+        gui.dragTo(x2, y2, duration=duration, button="left")
+
     def scroll(self, amount: int) -> None:
         self._input().scroll(amount)
 
